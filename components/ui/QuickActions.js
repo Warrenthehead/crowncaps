@@ -49,9 +49,9 @@ export default function QuickActions({ product }) {
     }`;
 
   return (
-    <div className="px-1.5 pb-5 md:px-2">
+    <div>
       {pending && (
-        <div className="mb-2.5 space-y-2" role="group" aria-label="Choisir les options">
+        <div className="mb-2 mt-2 space-y-2" role="group" aria-label="Choisir les options">
           {product.sizes.length > 1 || (product.sizes.length === 1 && !opts.sizeId) ? (
             <div className="flex flex-wrap gap-1.5">
               {product.sizes.map((s) => (
@@ -78,12 +78,12 @@ export default function QuickActions({ product }) {
           </p>
         </div>
       )}
-      <div className="grid grid-cols-2 gap-2">
-        <button type="button" onClick={() => start('cart')} className="btn-outline !min-h-10 !px-2 !text-[0.78rem]">
-          {done ? 'Ajouté ✓' : 'Ajouter au panier'}
+      <div className="grid grid-cols-2 border border-ink text-[0.7rem] tracking-[0.03em] md:text-[0.75rem]">
+        <button type="button" onClick={() => start('cart')} className="h-8 whitespace-nowrap bg-white px-1 text-ink transition hover:bg-ink hover:text-white active:opacity-80">
+          {done ? 'Ajouté ✓' : 'Au panier'}
         </button>
-        <button type="button" onClick={() => start('buy')} className="btn-primary !min-h-10 !px-2 !text-[0.78rem]">
-          Commander
+        <button type="button" onClick={() => start('buy')} className="h-8 whitespace-nowrap bg-ink px-1 text-white transition hover:bg-black/80 active:opacity-80">
+          Acheter maintenant
         </button>
       </div>
     </div>
