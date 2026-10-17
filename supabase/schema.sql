@@ -462,7 +462,7 @@ begin
 
   -- Sections de la page d'accueil (ordre des captures)
   insert into public.home_sections (type, title, position, config) values
-    ('slideshow', null, 1, '{"slides":[{"image_url":"/placeholders/banniere-1.svg","link":"/collections","alt":"Nouvelle collection CrownCaps"},{"image_url":"/placeholders/banniere-2.svg","link":"/collections/headwear","alt":"Casquettes et bonnets"}]}'),
+    ('slideshow', null, 1, '{"slides":[{"image_url":"/placeholders/banniere-2.svg","link":"/collections/headwear","alt":"Casquettes et bonnets"}]}'),
     ('product_grid', 'Collection en vedette', 2, '{"source":"featured","limit":8,"per_page":8}'),
     ('image_banner', null, 3, '{"image_url":"/placeholders/banniere-2.svg","link":"/collections","alt":"Streetwear à Libreville"}'),
     ('category_tiles', 'Explorez les sélections de la Maison', 4, '{"limit":4}'),
