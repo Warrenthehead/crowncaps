@@ -54,6 +54,7 @@ export async function saveProduct(input) {
       status: input.status || 'disponible',
       template: input.template || null,
       release_at: input.release_at ? new Date(input.release_at).toISOString() : null,
+      release_text: input.release_text?.trim() || null,
       brand: input.brand?.trim() || 'CrownCaps',
       featured: Boolean(input.featured),
       published: input.published !== false,

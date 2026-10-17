@@ -20,12 +20,13 @@ export default function AVenir({ product, onReleased }) {
         product={product}
         badge={<span className="inline-flex items-center rounded-full bg-ink px-3.5 py-1.5 text-[0.75rem] font-semibold tracking-[0.16em] text-white uppercase">À venir</span>}
       />
+      {product.release_text && <p className="mt-6 text-lg tracking-[0.04em]">{product.release_text}</p>}
       {upcoming && <Countdown date={product.release_at} onDone={onReleased} />}
       <div className="mt-8 flex flex-col gap-3">
         <a href={link} target="_blank" rel="noopener noreferrer" className="btn-primary">
           <IconWhatsApp size={20} /> Me prévenir sur WhatsApp
         </a>
-        <p className="text-center text-[0.8rem] text-muted">Bientôt disponible. Nous vous écrivons dès la sortie.</p>
+        <p className="text-center text-[0.8rem] text-muted">{product.release_text ? 'Nous vous écrivons dès la sortie.' : 'Bientôt disponible. Nous vous écrivons dès la sortie.'}</p>
       </div>
       <ProductDetails product={product} />
     </div>

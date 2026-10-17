@@ -111,6 +111,7 @@ create table if not exists public.products (
     check (status in ('disponible', 'vendu', 'a_venir')),
   template text,                       -- null = modèle par défaut de la catégorie
   release_at timestamptz,              -- date de sortie (modèle "À venir")
+  release_text text,                   -- message libre "À venir" (ex. "Bientôt disponible")
   code text not null unique default ('CC-' || lpad(nextval('public.product_code_seq')::text, 4, '0')),
   brand text not null default 'CrownCaps',
   featured boolean not null default false,

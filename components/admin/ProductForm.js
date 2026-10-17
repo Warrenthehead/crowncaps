@@ -53,6 +53,7 @@ export default function ProductForm({ product, catalog }) {
     status: product?.status || 'disponible',
     template: product?.template || '',
     release_at: toLocalInput(product?.release_at),
+    release_text: product?.release_text || '',
     code: product?.code || '',
     brand: product?.brand || 'CrownCaps',
     featured: product?.featured || false,
@@ -344,7 +345,12 @@ export default function ProductForm({ product, catalog }) {
                 Date de sortie (optionnel)
               </label>
               <input id="release" type="datetime-local" className="field" value={form.release_at} onChange={(e) => set('release_at', e.target.value)} />
-              <p className="mt-1 text-xs text-muted">Compte à rebours sur la page. À l&apos;heure choisie, le produit passe en Standard.</p>
+              <p className="mt-1 text-xs text-muted">Compte à rebours sur la page. À l&apos;heure choisie, le produit passe en Standard. Laissez vide si vous n&apos;avez pas de date.</p>
+              <label className="label mt-3" htmlFor="release-text">
+                Message affiché (optionnel)
+              </label>
+              <input id="release-text" className="field" maxLength={120} value={form.release_text} onChange={(e) => set('release_text', e.target.value)} placeholder="Bientôt disponible" />
+              <p className="mt-1 text-xs text-muted">Ex. « Bientôt disponible », « Drop fin du mois », « Arrivage en cours ». Vide = « Bientôt disponible ».</p>
             </div>
           )}
         </Section>
