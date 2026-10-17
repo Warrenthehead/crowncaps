@@ -1,4 +1,3 @@
-import Slideshow from './Slideshow';
 import PaginatedProducts from './PaginatedProducts';
 import ProductCarousel from './ProductCarousel';
 import CategoryTiles from './CategoryTiles';
@@ -11,7 +10,8 @@ export default async function HomeSection({ section, first = false }) {
   const config = section.config || {};
 
   if (section.type === 'slideshow') {
-    return <Slideshow slides={config.slides} />;
+    // Diaporama masqué sur la page d'accueil.
+    return null;
   }
 
   if (section.type === 'image_banner') {
