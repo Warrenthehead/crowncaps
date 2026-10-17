@@ -18,7 +18,7 @@ export default function useProductOptions(product) {
     return Object.keys(next).length === 0;
   };
 
-  const toItem = () => {
+  const toItem = (sId = sizeId, cId = colorId) => {
     const image = mainImage(product);
     return {
       productId: product.id,
@@ -27,8 +27,8 @@ export default function useProductOptions(product) {
       code: product.code,
       price: product.price,
       image: image?.thumb_url || image?.url || null,
-      size: product.sizes.find((s) => s.id === sizeId)?.label || null,
-      color: product.colors.find((c) => c.id === colorId)?.name || null,
+      size: product.sizes.find((s) => s.id === sId)?.label || null,
+      color: product.colors.find((c) => c.id === cId)?.name || null,
     };
   };
 
