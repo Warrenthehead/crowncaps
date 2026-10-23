@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PageHeader from '@/components/admin/PageHeader';
 import ProductForm from '@/components/admin/ProductForm';
@@ -15,6 +16,9 @@ export default async function EditProductPage({ params }) {
         <a href={`/produits/${product.slug}`} target="_blank" rel="noopener noreferrer" className="btn-admin-ghost">
           Voir sur le site
         </a>
+        <Link href="/admin/produits/nouveau" className="text-sm underline hover:text-muted">
+          Ajouter un nouveau produit
+        </Link>
       </PageHeader>
       <ProductForm product={product} catalog={catalog} />
     </>
