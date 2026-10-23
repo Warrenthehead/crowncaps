@@ -9,7 +9,7 @@ import { IconCheck, IconClose } from '@/components/icons';
 
 // Notification qui glisse sous l'en-tête après "Ajouter au panier".
 export default function CartNotification() {
-  const { lastAdded, dismissNotification, count, items, checkout } = useShop();
+  const { lastAdded, dismissNotification, count, items, checkout, updateQuantity } = useShop();
   const pathname = usePathname();
 
   // Disparaît après 8 secondes ou au changement de page
@@ -25,6 +25,13 @@ export default function CartNotification() {
   }, [pathname]);
 
   if (!lastAdded) return null;
+
+  // Annule l'ajout : retire une unité de l'article qui vient d'être ajouté
+  const undo = () => {
+    const current = items.find((i) => i.key === lastAdded.key);
+    if (current) updateQuantity(current.key, current.quantity - 1);
+    dismissNotification();
+  };
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-16 z-40 md:top-20" role="status" aria-live="polite">
@@ -58,6 +65,9 @@ export default function CartNotification() {
             </Link>
             <button type="button" onClick={() => checkout(items)} className="btn-primary">
               Procéder au paiement
+            </button>
+            <button type="button" onClick={undo} className="py-1 text-[0.9rem] text-muted underline hover:text-ink">
+              Annuler l&apos;ajout
             </button>
             <button type="button" onClick={dismissNotification} className="link-underline py-1 text-[0.95rem]">
               Continuer les achats

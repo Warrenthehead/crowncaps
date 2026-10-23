@@ -80,10 +80,10 @@ export default function QuickActions({ product }) {
       )}
       <div className="grid grid-cols-2 border border-ink text-[0.7rem] tracking-[0.03em] md:text-[0.75rem]">
         <button type="button" onClick={() => start('cart')} className="h-8 whitespace-nowrap bg-white px-1 text-ink transition hover:bg-ink hover:text-white active:opacity-80">
-          {done ? 'Ajouté ✓' : 'Au panier'}
+          {done ? 'Ajouté ✓' : 'Panier'}
         </button>
         <button type="button" onClick={() => start('buy')} className="h-8 whitespace-nowrap bg-ink px-1 text-white transition hover:bg-black/80 active:opacity-80">
-          Acheter maintenant
+          Acheter
         </button>
       </div>
     </div>

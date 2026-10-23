@@ -32,10 +32,10 @@ export default function Standard({ product }) {
 
       <div className="mt-8 flex flex-col gap-3">
         <button type="button" onClick={addToCart} className="btn-primary">
-          Ajouter au panier
+          Panier
         </button>
         <button type="button" onClick={buyNow} className="btn-outline">
-          Acheter directement
+          Acheter
         </button>
         {hasErrors && (
           <p className="text-center text-[0.85rem] text-danger" role="alert">
