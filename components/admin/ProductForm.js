@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState, useTransition } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import ImageUploader from './ImageUploader';
 import { useToast } from './Toast';
@@ -31,7 +31,10 @@ function Section({ title, children, aside }) {
 }
 
 // Formulaire produit (création et modification).
-export default function ProductForm({ product, catalog }) {
+// Mode "embedded" : utilisé par la création multiple. Pas de barre d'enregistrement,
+// les données sont remontées au parent via onData.
+export default function ProductForm({ product, catalog, embedded = false, onData }) {
+  const uid = useId();
   const router = useRouter();
   const toast = useToast();
   const [saving, startSaving] = useTransition();
@@ -67,6 +70,12 @@ export default function ProductForm({ product, catalog }) {
   const [newColor, setNewColor] = useState(null);
   const [newSize, setNewSize] = useState(null);
   const [newType, setNewType] = useState(null);
+
+  const onDataRef = useRef(onData);
+  onDataRef.current = onData;
+  useEffect(() => {
+    onDataRef.current?.({ ...form, release_at: form.release_at ? new Date(form.release_at).toISOString() : null, images });
+  }, [form, images]);
 
   const set = (key, value) => setForm((f) => ({ ...f, [key]: value }));
   const toggle = (key, id) => set(key, form[key].includes(id) ? form[key].filter((x) => x !== id) : [...form[key], id]);
@@ -156,16 +165,17 @@ export default function ProductForm({ product, catalog }) {
       router.refresh();
     });
 
+  const Wrapper = embedded ? 'div' : 'form';
   return (
-    <form onSubmit={submit} className="grid gap-4 pb-24 lg:grid-cols-[1fr_20rem]">
+    <Wrapper {...(embedded ? {} : { onSubmit: submit })} className={`grid gap-4 lg:grid-cols-[1fr_20rem] ${embedded ? '' : 'pb-24'}`}>
       <div className="space-y-4">
         <Section title="Informations">
           <div>
-            <label className="label" htmlFor="title">
+            <label className="label" htmlFor={`${uid}-title`}>
               Titre
             </label>
             <input
-              id="title"
+              id={`${uid}-title`}
               required
               className="field"
               value={form.title}
@@ -190,7 +200,7 @@ export default function ProductForm({ product, catalog }) {
           </div>
           <div>
             <div className="mb-1.5 flex items-center justify-between">
-              <label className="label mb-0" htmlFor="description">
+              <label className="label mb-0" htmlFor={`${uid}-description`}>
                 Description
               </label>
               <div className="flex gap-1">
@@ -203,7 +213,7 @@ export default function ProductForm({ product, catalog }) {
               </div>
             </div>
             <textarea
-              id="description"
+              id={`${uid}-description`}
               ref={descRef}
               rows={6}
               className="field"
@@ -221,16 +231,16 @@ export default function ProductForm({ product, catalog }) {
         <Section title="Prix">
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="label" htmlFor="price">
+              <label className="label" htmlFor={`${uid}-price`}>
                 Prix (F CFA)
               </label>
-              <input id="price" inputMode="numeric" required className="field" value={form.price} onChange={(e) => set('price', e.target.value.replace(/\D/g, ''))} placeholder="12000" />
+              <input id={`${uid}-price`} inputMode="numeric" required className="field" value={form.price} onChange={(e) => set('price', e.target.value.replace(/\D/g, ''))} placeholder="12000" />
             </div>
             <div>
-              <label className="label" htmlFor="compare">
+              <label className="label" htmlFor={`${uid}-compare`}>
                 Ancien prix barré (optionnel)
               </label>
-              <input id="compare" inputMode="numeric" className="field" value={form.compare_at_price} onChange={(e) => set('compare_at_price', e.target.value.replace(/\D/g, ''))} placeholder="15000" />
+              <input id={`${uid}-compare`} inputMode="numeric" className="field" value={form.compare_at_price} onChange={(e) => set('compare_at_price', e.target.value.replace(/\D/g, ''))} placeholder="15000" />
             </div>
           </div>
         </Section>
@@ -341,15 +351,15 @@ export default function ProductForm({ product, catalog }) {
           <p className="text-xs text-muted">{TEMPLATES.find((t) => t.key === effectiveTemplate)?.description}</p>
           {(effectiveTemplate === 'a-venir' || form.status === 'a_venir') && (
             <div>
-              <label className="label" htmlFor="release">
+              <label className="label" htmlFor={`${uid}-release`}>
                 Date de sortie (optionnel)
               </label>
-              <input id="release" type="datetime-local" className="field" value={form.release_at} onChange={(e) => set('release_at', e.target.value)} />
+              <input id={`${uid}-release`} type="datetime-local" className="field" value={form.release_at} onChange={(e) => set('release_at', e.target.value)} />
               <p className="mt-1 text-xs text-muted">Compte à rebours sur la page. À l&apos;heure choisie, le produit passe en Standard. Laissez vide si vous n&apos;avez pas de date.</p>
-              <label className="label mt-3" htmlFor="release-text">
+              <label className="label mt-3" htmlFor={`${uid}-release-text`}>
                 Message affiché (optionnel)
               </label>
-              <input id="release-text" className="field" maxLength={120} value={form.release_text} onChange={(e) => set('release_text', e.target.value)} placeholder="Bientôt disponible" />
+              <input id={`${uid}-release-text`} className="field" maxLength={120} value={form.release_text} onChange={(e) => set('release_text', e.target.value)} placeholder="Bientôt disponible" />
               <p className="mt-1 text-xs text-muted">Ex. « Bientôt disponible », « Drop fin du mois », « Arrivage en cours ». Vide = « Bientôt disponible ».</p>
             </div>
           )}
@@ -357,10 +367,10 @@ export default function ProductForm({ product, catalog }) {
 
         <Section title="Organisation">
           <div>
-            <label className="label" htmlFor="category">
+            <label className="label" htmlFor={`${uid}-category`}>
               Catégorie
             </label>
-            <select id="category" className="field" value={form.category_id} onChange={(e) => set('category_id', e.target.value)}>
+            <select id={`${uid}-category`} className="field" value={form.category_id} onChange={(e) => set('category_id', e.target.value)}>
               <option value="">Aucune</option>
               {catalog.categories.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -370,7 +380,7 @@ export default function ProductForm({ product, catalog }) {
             </select>
           </div>
           <div>
-            <label className="label" htmlFor="type">
+            <label className="label" htmlFor={`${uid}-type`}>
               Type de vêtement
             </label>
             {newType ? (
@@ -382,7 +392,7 @@ export default function ProductForm({ product, catalog }) {
               </div>
             ) : (
               <div className="flex gap-2">
-                <select id="type" className="field" value={form.garment_type_id} onChange={(e) => set('garment_type_id', e.target.value)}>
+                <select id={`${uid}-type`} className="field" value={form.garment_type_id} onChange={(e) => set('garment_type_id', e.target.value)}>
                   <option value="">Aucun</option>
                   {garmentTypes.map((t) => (
                     <option key={t.id} value={t.id}>
@@ -397,16 +407,16 @@ export default function ProductForm({ product, catalog }) {
             )}
           </div>
           <div>
-            <label className="label" htmlFor="code">
+            <label className="label" htmlFor={`${uid}-code`}>
               Code produit
             </label>
-            <input id="code" className="field uppercase" value={form.code} onChange={(e) => set('code', e.target.value)} placeholder="Automatique (CC-0042)" />
+            <input id={`${uid}-code`} className="field uppercase" value={form.code} onChange={(e) => set('code', e.target.value)} placeholder="Automatique (CC-0042)" />
           </div>
           <div>
-            <label className="label" htmlFor="brand">
+            <label className="label" htmlFor={`${uid}-brand`}>
               Marque
             </label>
-            <input id="brand" className="field" value={form.brand} onChange={(e) => set('brand', e.target.value)} />
+            <input id={`${uid}-brand`} className="field" value={form.brand} onChange={(e) => set('brand', e.target.value)} />
           </div>
         </Section>
 
@@ -417,17 +427,19 @@ export default function ProductForm({ product, catalog }) {
         )}
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 px-3 py-3 backdrop-blur lg:left-60">
-        <div className="mx-auto flex max-w-5xl items-center justify-end gap-2">
-          <button type="button" className="btn-admin-ghost" onClick={() => router.push('/admin/produits')}>
-            Annuler
-          </button>
-          <button type="submit" className="btn-admin min-w-32" disabled={saving}>
-            {saving ? 'Enregistrement…' : 'Enregistrer'}
-          </button>
+      {!embedded && (
+        <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 px-3 py-3 backdrop-blur lg:left-60">
+          <div className="mx-auto flex max-w-5xl items-center justify-end gap-2">
+            <button type="button" className="btn-admin-ghost" onClick={() => router.push('/admin/produits')}>
+              Annuler
+            </button>
+            <button type="submit" className="btn-admin min-w-32" disabled={saving}>
+              {saving ? 'Enregistrement…' : 'Enregistrer'}
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      )}
+    </Wrapper>
   );
 }
 

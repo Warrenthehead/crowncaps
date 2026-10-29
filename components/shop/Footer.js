@@ -1,5 +1,11 @@
 import Link from 'next/link';
-import { IconPlus } from '@/components/icons';
+import { IconFacebook, IconInstagram, IconPlus, IconTikTok } from '@/components/icons';
+
+const SOCIALS = [
+  { key: 'instagram', label: 'Instagram', Icon: IconInstagram },
+  { key: 'tiktok', label: 'TikTok', Icon: IconTikTok },
+  { key: 'facebook', label: 'Facebook', Icon: IconFacebook },
+];
 
 // Drapeau du Gabon (vert, jaune, bleu)
 function GabonFlag() {
@@ -56,7 +62,23 @@ export default function Footer({ settings, menu }) {
           </div>
         )}
 
-        <div className="mt-12 flex flex-col items-center gap-3 text-center text-[0.75rem] text-muted">
+        <ul className="mt-10 flex items-center justify-center gap-3">
+          {SOCIALS.filter(({ key }) => settings.socials?.[key]).map(({ key, label, Icon }) => (
+            <li key={key}>
+              <a
+                href={settings.socials[key]}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${label} de ${settings.shop_name}`}
+                className="flex h-11 w-11 items-center justify-center rounded-full text-ink/75 transition hover:bg-ink hover:text-white"
+              >
+                <Icon size={22} />
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-8 flex flex-col items-center gap-3 text-center text-[0.75rem] text-muted">
           <p>{settings.footer_text}</p>
           <p className="inline-flex items-center gap-2">
             Pays de livraison – {settings.shipping_country} <GabonFlag />

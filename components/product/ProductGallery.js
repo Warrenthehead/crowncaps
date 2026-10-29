@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import SmartImage from '@/components/ui/SmartImage';
+import { mediaUrl } from '@/lib/image-url';
 import useLockBody from '@/components/shop/useLockBody';
 import { IconChevronLeft, IconChevronRight, IconClose, IconZoom } from '@/components/icons';
 
@@ -90,7 +91,14 @@ export default function ProductGallery({ images, title }) {
           </div>
           <div className="relative flex-1 overflow-auto">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={current.url} alt={current.alt || title} className="mx-auto h-full w-full object-contain" />
+            <img
+              src={mediaUrl(current.url)}
+              alt={current.alt || title}
+              onError={(e) => {
+                if (e.currentTarget.src !== current.url) e.currentTarget.src = current.url;
+              }}
+              className="mx-auto h-full w-full object-contain"
+            />
             {images.length > 1 && (
               <>
                 <button

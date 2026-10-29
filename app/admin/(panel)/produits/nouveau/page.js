@@ -1,5 +1,5 @@
 import PageHeader from '@/components/admin/PageHeader';
-import ProductForm from '@/components/admin/ProductForm';
+import MultiProductForm from '@/components/admin/MultiProductForm';
 import { adminCatalog } from '@/lib/admin/queries';
 
 export const metadata = { title: 'Nouveau produit' };
@@ -9,7 +9,7 @@ export default async function NewProductPage() {
   return (
     <>
       <PageHeader title="Nouveau produit" back="/admin/produits" />
-      <ProductForm catalog={catalog} />
+      <MultiProductForm catalog={catalog} />
     </>
   );
 }

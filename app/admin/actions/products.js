@@ -102,6 +102,30 @@ export async function saveProduct(input) {
   });
 }
 
+// Crée plusieurs produits d'un coup (5 maximum). Tout ou rien : si l'un échoue,
+// ceux déjà créés pendant cet appel sont supprimés.
+export async function saveProducts(inputs) {
+  return action(async () => {
+    await requireAdmin();
+    if (!Array.isArray(inputs) || inputs.length === 0) throw new Error('Aucun produit à enregistrer.');
+    if (inputs.length > 5) throw new Error('5 produits maximum à la fois.');
+    inputs.forEach((p, i) => {
+      if (!p.title?.trim()) throw new Error(`Produit ${i + 1} : le titre est obligatoire.`);
+    });
+
+    const created = [];
+    for (const [i, input] of inputs.entries()) {
+      const res = await saveProduct({ ...input, id: undefined });
+      if (!res.ok) {
+        if (created.length) await deleteProducts(created.map((c) => c.id));
+        throw new Error(`Produit ${i + 1} : ${res.error}`);
+      }
+      created.push(res.data);
+    }
+    return created;
+  });
+}
+
 export async function deleteProducts(ids) {
   return action(async () => {
     const supabase = await requireAdmin();
